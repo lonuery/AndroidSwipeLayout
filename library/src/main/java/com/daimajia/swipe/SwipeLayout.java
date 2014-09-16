@@ -1,4 +1,4 @@
-package com.daimajia.swipe;
+package com.speedtalk.swipe;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -22,14 +22,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.speedtalk.picc.R;
+
 public class SwipeLayout extends FrameLayout {
 
     private ViewDragHelper mDragHelper;
-
+    
     private int mDragDistance = 0;
     private DragEdge mDragEdge;
     private ShowMode mShowMode;
-
+    
     private List<SwipeListener> mSwipeListeners = new ArrayList<SwipeListener>();
     private List<SwipeDenier> mSwipeDeniers = new ArrayList<SwipeDenier>();
     private Map<View, ArrayList<OnRevealListener>> mRevealListeners = new HashMap<View, ArrayList<OnRevealListener>>();
@@ -60,7 +62,7 @@ public class SwipeLayout extends FrameLayout {
     public SwipeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDragHelper = ViewDragHelper.create(this, mDragHelperCallback);
-
+        
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SwipeLayout);
         int ordinal = a.getInt(R.styleable.SwipeLayout_drag_edge, DragEdge.Right.ordinal());
         mDragEdge = DragEdge.values()[ordinal];
@@ -163,7 +165,7 @@ public class SwipeLayout extends FrameLayout {
     }
 
     private ViewDragHelper.Callback mDragHelperCallback = new ViewDragHelper.Callback() {
-
+    	
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
             if(child == getSurfaceView()){
@@ -314,7 +316,7 @@ public class SwipeLayout extends FrameLayout {
                 }else{
                     Rect rect = computeBottomLayDown(mDragEdge);
                     getBottomView().layout(rect.left, rect.top, rect.right, rect.bottom);
-
+                    
                     int newLeft = getSurfaceView().getLeft() + dx, newTop = getSurfaceView().getTop() + dy;
 
                     if(mDragEdge == DragEdge.Left && newLeft < getPaddingLeft())        newLeft = getPaddingLeft();
@@ -559,7 +561,7 @@ public class SwipeLayout extends FrameLayout {
     public void computeScroll() {
         super.computeScroll();
         if(mDragHelper.continueSettling(true)) {
-            ViewCompat.postInvalidateOnAnimation(this);
+            ViewCompat.postInvalidateOnAnimation(this);         
         }
     }
 
@@ -639,7 +641,7 @@ public class SwipeLayout extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-
+    	
         if(!isEnabled() || !isEnabledInAdapterView()){
             return true;
         }
@@ -766,7 +768,7 @@ public class SwipeLayout extends FrameLayout {
                     sX = event.getRawX();
                     sY = event.getRawY();
                     return true;
-                }
+                }              
 
                 float distanceX = event.getRawX() - sX;
                 float distanceY = event.getRawY() - sY;
@@ -814,15 +816,20 @@ public class SwipeLayout extends FrameLayout {
                     parent.requestDisallowInterceptTouchEvent(false);
                     return false;
                 }else{
-                    if(touching != null){
-                        touching.setPressed(false);
-                    }
-                    parent.requestDisallowInterceptTouchEvent(true);
-                    mDragHelper.processTouchEvent(event);
+                	if(Math.abs(distanceY)>20||Math.abs(distanceX)>20){
+	                	if(touching != null)
+	                        touching.setPressed(false);
+	                	parent.requestDisallowInterceptTouchEvent(true);
+	                	mDragHelper.processTouchEvent(event);
+                	}
+                    /*parent.requestDisallowInterceptTouchEvent(true);
+                    mDragHelper.processTouchEvent(event);*/
                 }
                 break;
             }
             case MotionEvent.ACTION_UP:
+            	if(touching != null)
+                    touching.setPressed(false);
             case MotionEvent.ACTION_CANCEL:
             {
                 sX = -1;
