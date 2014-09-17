@@ -1,4 +1,4 @@
-package com.speedtalk.swipe;
+package com.daimajia.swipe;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.speedtalk.picc.R;
+import com.daimajia.swipedemo.R;
 
 public class SwipeLayout extends FrameLayout {
 
@@ -31,7 +31,7 @@ public class SwipeLayout extends FrameLayout {
     private int mDragDistance = 0;
     private DragEdge mDragEdge;
     private ShowMode mShowMode;
-    
+
     private List<SwipeListener> mSwipeListeners = new ArrayList<SwipeListener>();
     private List<SwipeDenier> mSwipeDeniers = new ArrayList<SwipeDenier>();
     private Map<View, ArrayList<OnRevealListener>> mRevealListeners = new HashMap<View, ArrayList<OnRevealListener>>();
@@ -641,7 +641,7 @@ public class SwipeLayout extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-    	
+
         if(!isEnabled() || !isEnabledInAdapterView()){
             return true;
         }
@@ -716,7 +716,7 @@ public class SwipeLayout extends FrameLayout {
         int[] loc = new int[2];
         v.getLocationOnScreen(loc);
         int left = loc[0], top = loc[1];
-
+        
         if(event.getRawX() > left && event.getRawX() < left + v.getWidth()
                 && event.getRawY() > top && event.getRawY() < top + v.getHeight()){
             return v.onTouchEvent(event);
@@ -768,8 +768,10 @@ public class SwipeLayout extends FrameLayout {
                     sX = event.getRawX();
                     sY = event.getRawY();
                     return true;
-                }              
-
+                }            
+                /*if(touching != null)
+                    touching.setPressed(false);*/
+                
                 float distanceX = event.getRawX() - sX;
                 float distanceY = event.getRawY() - sY;
                 float angle = Math.abs(distanceY / distanceX);
